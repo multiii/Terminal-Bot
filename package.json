@@ -9,6 +9,8 @@
     "@discordjs/voice": "^0.8.0",
     "chalk": "4.1.2",
     "discord.js": "^13.6.0",
+    "ffmpeg": "^0.0.4",
+    "ffprobe": "^1.1.2",
     "got": "^12.0.1",
     "neo-blessed": "^0.2.0",
     "term.js": "^0.0.7",
