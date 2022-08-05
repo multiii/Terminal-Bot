@@ -1,0 +1,18 @@
+{
+  "name": "terminal-app",
+  "version": "0.0.0",
+  "description": "App which allows you to use discord through the terminal",
+  "author": {
+    "name": ""
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.8.0",
+    "chalk": "4.1.2",
+    "discord.js": "^13.6.0",
+    "got": "^12.0.1",
+    "neo-blessed": "^0.2.0",
+    "term.js": "^0.0.7",
+    "terminal-image": "^2.0.0"
+  },
+  "type": "module"
+}
