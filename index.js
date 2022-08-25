@@ -191,6 +191,18 @@ const main = async () => {
 		}
 
 		messageList.addItem(`${chalk.green(date)}${chalk.yellow(ref)}${chalk.blue(msg.author.tag)} ${content} ${chalk.green(indexStr)}`);
+
+		if (msg.embeds.length > 0) {
+			const embed = msg.embeds[0];
+
+			if (embed.title)
+				messageList.addItem(`\t${chalk.red("→ Title:")} ${embed.title}`);
+			if (embed.description)
+				messageList.addItem(`\t${chalk.red("→ Description:")} ${embed.description}`);
+			if (embed.image)
+				messageList.addItem(`\t${chalk.red("→ Image:")} ${embed.image.url}`);
+		}
+
 		messageList.scrollTo(100);
 		screen.render();
 
@@ -322,21 +334,23 @@ const main = async () => {
 				}
 
 				else if (command === "user") {
+					const chan = await getChannel();
 					userID = args[0];
 
 					if (userID in users)
 						userID = users[userID];
 
 					else if (!parseInt(userID)) {
-						let tag, chan, member;
+						let tag, member;
 
 						tag = userID;
 						userID = undefined;
-						chan = await getChannel();
 
 						member = await bot.guilds.cache.get(chan.guildId).members.fetch({ query: tag, limit: 1 });
 						userID = member.firstKey();
 					}
+
+					const gmember = await chan.guild.members.fetch(userID);
 
 					messageList.clearItems();
 					messageList.scrollTo(10000);
@@ -345,7 +359,52 @@ const main = async () => {
 					index = 0;
 					messages = [];
 
+					messageList.addItem(`You are messaging ${chalk.green(gmember.user.tag)}`);
+
 					await renderMessages();
+				}
+
+				else if (command === "ping") {
+					const chan = await getChannel();
+					userID = args[0];
+
+					if (userID in users)
+						userID = users[userID];
+
+					else if (!parseInt(userID)) {
+						let tag, member;
+
+						tag = userID;
+						userID = undefined;
+
+						if (chan instanceof Discord.DMChannel)
+							userID = chan.recipient.id;
+						else {
+							member = await bot.guilds.cache.get(chan.guildId).members.fetch({ query: tag, limit: 1 });
+							userID = member.firstKey();
+						}
+					}
+
+					chan.send({ content: `<@${userID}>` });
+				}
+
+				else if (command === "users") {
+					const chan = await getChannel();
+					const guild = chan.guild;
+
+					messageList.clearItems();
+
+					const members = await guild.members.fetch();
+
+					for (const member of members) {
+						const user = member[1].user;
+						if (user.bot)
+							continue;
+						messageList.addItem(`${chalk.green(user.id)} -> ${user.tag}`);
+					}
+
+					messageList.scrollTo(100);
+					screen.render();
 				}
 
 				else if (command === "clear") {
